@@ -1,47 +1,64 @@
 /* eslint-disable no-unused-vars */
 import express from 'express';
 import Reflect from './reflects';
-import { Data } from './interfaces';
+import { Data, Options } from './interfaces';
 
 declare global {
   namespace Express {
-    export const cont: any;
     interface Application {
       controllers: Function;
     }
   }
 }
 
-const catchAsync = (fns: any[]) => {
-  fns.forEach((fn, index) => {
-    fns[index] = (req: any, res: any, next: any) => {
-      Promise.resolve(fn(req, res, next)).catch((err) => {
-        console.log('error: ', err);
-        next(err);
+export default class DecoRoute {
+  private static options: Options = {
+    catchAsync: true,
+  };
+
+  private static catchAsync(fns: any[]) {
+    if (this.options.catchAsync)
+      fns.forEach((fn, index) => {
+        fns[index] = (req: any, res: any, next: any) => {
+          Promise.resolve(fn(req, res, next)).catch((err) => {
+            next(err);
+          });
+        };
+      });
+    return fns;
+  }
+
+  private static handleOptions(options: Options): void {
+    const optionKeys = Object.keys(options) as [keyof Options];
+    optionKeys.forEach((option: keyof Options) => {
+      this.options[option] = options[option];
+    });
+  }
+
+  static addControllers() {
+    express.application.controllers = function (
+      pathPrefix: string,
+      controllers: any[],
+      options?: Options
+    ) {
+      if (options) DecoRoute.handleOptions(options);
+
+      controllers.forEach((controller) => {
+        const target = controller.prototype;
+        const data: Data = Reflect.getTargetData(target);
+        data.noName.handlers.forEach((handlerData) => {
+          const allPath =
+            pathPrefix + handlerData.controllerPath + handlerData.path;
+          const middlewares = Reflect.getMiddleWareData(
+            target,
+            handlerData.propertyKey
+          );
+          this[handlerData.method](
+            allPath,
+            DecoRoute.catchAsync([...middlewares, handlerData.handler])
+          );
+        });
       });
     };
-  });
-  return fns;
-};
-
-express.application.controllers = function (
-  pathPrefix: string,
-  controllers: any[]
-) {
-  controllers.forEach((controller) => {
-    const target = controller.prototype;
-    const data: Data = Reflect.getTargetData(target);
-    data.noName.handlers.forEach((handlerData) => {
-      const allPath =
-        pathPrefix + handlerData.controllerPath + handlerData.path;
-      const middlewares = Reflect.getMiddleWareData(
-        target,
-        handlerData.propertyKey
-      );
-      this[handlerData.method](
-        allPath,
-        catchAsync([...middlewares, handlerData.handler])
-      );
-    });
-  });
-};
+  }
+}

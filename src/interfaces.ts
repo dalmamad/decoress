@@ -27,3 +27,7 @@ export interface Data {
     handlers: HandlerData[];
   };
 }
+
+export interface Options {
+  catchAsync?: boolean;
+}
