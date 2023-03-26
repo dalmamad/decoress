@@ -31,3 +31,9 @@ export interface Data {
 export interface Options {
   catchAsync?: boolean;
 }
+
+export interface Ctrls {
+  controllers: any[];
+  pathPrefix?: string;
+  options?: Options;
+}
