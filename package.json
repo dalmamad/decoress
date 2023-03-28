@@ -1,13 +1,14 @@
 {
-  "name": "decoroute",
+  "name": "decoress",
   "version": "1.0.0",
-  "description": "a minimal package for decorating express routes",
+  "description": "a minimal package for decorating express controllers",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
     "test": "jest",
     "prepare": "husky install",
     "clean": "npx rimraf lib/ types/",
+    "prepublishOnly": "npm run test $$ npm run build",
     "build": "npm run clean && npx tsc",
     "format": "npx prettier --write ."
   },
