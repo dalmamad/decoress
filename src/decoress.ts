@@ -35,18 +35,22 @@ class DecoRoute {
     controllers.forEach((controller) => {
       const target = controller.prototype;
       const data: Data = Reflect.getTargetData(target);
+
       data.noName.handlers.forEach((handlerData) => {
         const allPath = pathPrefix
           ? pathPrefix + handlerData.controllerPath + handlerData.path
           : handlerData.controllerPath + handlerData.path;
+
         const middlewares = Reflect.getMiddleWareData(
           target,
           handlerData.propertyKey
         );
-        app[handlerData.method](
-          allPath,
-          DecoRoute.catchAsync([...middlewares, handlerData.handler])
-        );
+
+        const mwsAndHandler = middlewares
+          ? [...middlewares, handlerData.handler]
+          : [handlerData.handler];
+
+        app[handlerData.method](allPath, DecoRoute.catchAsync(mwsAndHandler));
       });
     });
   }

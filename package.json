@@ -1,6 +1,6 @@
 {
   "name": "decoress",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "a minimal package for decorating express controllers",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
@@ -8,10 +8,24 @@
     "test": "jest",
     "prepare": "husky install",
     "clean": "npx rimraf lib/ types/",
-    "prepublishOnly": "npm run test $$ npm run build",
     "build": "npm run clean && npx tsc",
+    "prepublishOnly": "npm run test && npm run build ",
     "format": "npx prettier --write ."
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dalmamad/decoress.git"
+  },
+  "tags": [
+    "decorators",
+    "express",
+    "express.js",
+    "typescript",
+    "typescript-express",
+    "typescript-express.js",
+    "express-controllers",
+    "controllers"
+  ],
   "author": "dalmamad",
   "license": "ISC",
   "devDependencies": {
@@ -45,6 +59,7 @@
   },
   "files": [
     "lib/**/*",
-    "types/**/*"
+    "types/**/*",
+    "README.md"
   ]
 }

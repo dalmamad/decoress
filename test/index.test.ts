@@ -33,9 +33,7 @@ beforeAll(() => {
     }
 
     @Post('/post')
-    @Mw(mw)
     async post(req: any, res: any) {
-      if (!req.mw) throw new Error('no middleware');
       res.json({ status: 200 });
     }
 
