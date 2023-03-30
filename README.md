@@ -14,7 +14,8 @@ you can use your express as before. this package tends to be lightweight and onl
 1. install `express` and `decoress`:
 
 ```bash
-npm install decoress express
+npm install decoress --save-exact
+npm install express
 ```
 
 2. in `tsconfig.json` set these options:
@@ -98,6 +99,58 @@ setControllers(app, {
   controllers: [UserController],
   options: { catchAsync: false },
 });
+```
+
+## Middlewares
+
+you have two ways to implement middlewares:
+
+1. as shown above you can use `Mw()` decorator. for example you have `validate()` function which you want to use as middleware:
+
+```typescript
+  @Get('/get')
+  @Mw(validate(schema))
+  async get(req: any, res: any) {
+    res.send('...data');
+  }
+```
+
+2. create a wrapper around `Mw()` decorator.
+   if you use a middleware repeatedly, for example `validate()`, you may want to use `Validate(schema)` instead of `Mw(validate(schema))`:
+
+```typescript
+// in validateMw.ts file
+import { Mw } from 'decoress';
+
+// your wrapper
+export function Validate(schema) {
+  // your middleware
+  function fn(req: any, res: any, next: any) {
+    // ... do something with schema or whatever
+    next();
+  }
+  // pass yuor middleware to Mw decorator and return it
+  return Mw(fn);
+}
+```
+
+then you can use it as decorator:
+
+```typescript
+// in your controller.ts file
+
+import { Get, Controller } from 'decoress';
+import { Validate } from './validateMw.ts';
+import { schema } from './someFile.ts';
+
+@Controller('/data')
+export class UserController {
+  @Get('/get')
+  @Validate(schema)
+  async get(req: any, res: any) {
+    res.send('...data');
+  }
+}
 ```
 
 ## Inspired by
