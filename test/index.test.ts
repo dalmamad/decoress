@@ -74,7 +74,20 @@ beforeAll(() => {
     }
   }
 
-  setControllers(app, { controllers: [Cont], pathPrefix: '/api' });
+  @Controller()
+  class Cont2 {
+    @Get()
+    async noArg(req: any, res: any) {
+      res.json({ status: 200 });
+    }
+
+    @Get('/sync')
+    async sync(req: any, res: any) {
+      res.json({ status: 200 });
+    }
+  }
+
+  setControllers(app, { controllers: [Cont, Cont2], pathPrefix: '/api' });
 });
 
 describe('User controllers', () => {
@@ -105,5 +118,17 @@ describe('User controllers', () => {
   test('Head data', async () => {
     const res = await request(app).head('/api/data/head');
     expect(res.headers.status).toEqual('200');
+  });
+});
+
+describe('extra tests', () => {
+  test('testing Get and Controller without arg', async () => {
+    const res = await request(app).get('/api');
+    expect(res.body.status).toEqual(200);
+  });
+
+  test('testing decorator with sync function', async () => {
+    const res = await request(app).get('/api/sync');
+    expect(res.body.status).toEqual(200);
   });
 });

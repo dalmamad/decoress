@@ -1,7 +1,7 @@
 import Reflect from './reflects';
 import { HandlerData } from './interfaces';
 
-export function Controller(path: string) {
+export function Controller(path = '') {
   return (target: Function) => {
     Reflect.addControllerData(path, target.prototype);
   };
@@ -13,7 +13,7 @@ export function Mw(func: Function): Function {
   };
 }
 
-export function Get(path: string) {
+export function Get(path = '') {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const data: HandlerData = {
       method: 'get',
@@ -25,7 +25,7 @@ export function Get(path: string) {
   };
 }
 
-export function Post(path: string) {
+export function Post(path = '') {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const data: HandlerData = {
       method: 'post',
@@ -37,7 +37,7 @@ export function Post(path: string) {
   };
 }
 
-export function Delete(path: string) {
+export function Delete(path = '') {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const data: HandlerData = {
       method: 'delete',
@@ -49,7 +49,7 @@ export function Delete(path: string) {
   };
 }
 
-export function Put(path: string) {
+export function Put(path = '') {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const data: HandlerData = {
       method: 'put',
@@ -61,7 +61,7 @@ export function Put(path: string) {
   };
 }
 
-export function Patch(path: string) {
+export function Patch(path = '') {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const data: HandlerData = {
       method: 'patch',
@@ -73,7 +73,7 @@ export function Patch(path: string) {
   };
 }
 
-export function Head(path: string) {
+export function Head(path = '') {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const data: HandlerData = {
       method: 'head',
@@ -85,7 +85,7 @@ export function Head(path: string) {
   };
 }
 
-export function All(path: string) {
+export function All(path = '') {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const data: HandlerData = {
       method: 'all',
