@@ -1,6 +1,6 @@
 {
   "name": "decoress",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "a minimal package for decorating express controllers",
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
